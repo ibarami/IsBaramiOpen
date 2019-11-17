@@ -19,15 +19,18 @@ def pushToGit(OpenCheck):
     if (IsBaramiOpen != OpenCheck) or (init_run is False):
         readme=open("/home/pi/ibarami.github.io/index.md",'r+t',encoding='utf-8')
         edit=readme.read()
+        #print(edit)
         readme.close()
         init_run=True
         if OpenCheck is 0:
-            edit=edit.replace('열림','닫힘')
+            edit=edit.replace('**열림**','**닫힘**')
             IsBaramiOpen=OpenCheck
         else:
-            edit=edit.replace('열림','닫힘')
+            edit=edit.replace('**닫힘**','**열림**')
             #readme.write("열림")
             IsBaramiOpen=OpenCheck
+        #print("==================")
+        #print(edit)
         readme=open("/home/pi/ibarami.github.io/index.md",'w+',encoding='utf-8')
         readme.write(edit)
         readme.close()
@@ -63,12 +66,13 @@ if __name__== "__main__":
 
         else:
             mag_avg=np.mean(mag_list)
-            if mag_avg >500:
-                #print("열림")
-                pushToGit(1)
-            else:
-                #print("닫힘")
+            #print(mag_avg)
+            if mag_avg >1200:
+                #print("close")
                 pushToGit(0)
+            else:
+                #print("open")
+                pushToGit(1)
 
             del(mag_list)
             mag_list=list()

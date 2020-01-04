@@ -7,6 +7,7 @@ import math
 import numpy as np
 from glob import glob
 import git
+import time
 
 IsBaramiOpen=1 #0이면 닫혀있다는 의미다. 임의로 설정하였다.
 path_git_repo=r'/home/pi/ibarami.github.io/'
@@ -34,12 +35,22 @@ def pushToGit(OpenCheck):
         readme=open("/home/pi/ibarami.github.io/index.md",'w+',encoding='utf-8')
         readme.write(edit)
         readme.close()
+        while True:
+            try:
+                git_function()
+                break
+            except IOError:
+                pass
 
-        repo=git.Repo(path_git_repo)
-        repo.git.add(update=True)
-        repo.index.commit(commit_message)
-        origin=repo.remote(name='origin')
-        origin.push()
+            #안 될 것 같으면 except Exception을 추가해보자
+
+def git_function():
+    repo=git.Repo(path_git_repo)
+    repo.git.add(update=True)
+    changed_time=time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+    repo.index.commit(changed_time)
+    origin=repo.remote(name='origin')
+    origin.push()
 
         # try:
         #     repo=git.Repo(path_git_repo)

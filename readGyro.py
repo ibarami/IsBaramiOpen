@@ -70,6 +70,7 @@ if __name__== "__main__":
         mpu9250 = header.MPU9250()
         mag=mpu9250.readMagnet()
         mag_total=math.sqrt(mag['x']**2+mag['y']**2+mag['z']**2)
+        time.sleep(1)
 
         if check<3:
             mag_list.append(mag_total)

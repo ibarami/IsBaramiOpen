@@ -22,14 +22,18 @@ def pushToGit(OpenCheck):
         edit=readme.read()
         #print(edit)
         readme.close()
+        if init_run is False:
+            barami_message=-1
         init_run=True
         if OpenCheck is 0:
             edit=edit.replace('**열림**','**닫힘**')
             IsBaramiOpen=OpenCheck
+            barami_message=0
         else:
             edit=edit.replace('**닫힘**','**열림**')
             #readme.write("열림")
             IsBaramiOpen=OpenCheck
+            barami_message=1
         #print("==================")
         #print(edit)
         readme=open("/home/pi/ibarami.github.io/index.md",'w+',encoding='utf-8')
@@ -37,20 +41,34 @@ def pushToGit(OpenCheck):
         readme.close()
         while True:
             try:
-                git_function()
+                git_function(barami_message)
                 break
             except IOError:
                 pass
 
             #안 될 것 같으면 except Exception을 추가해보자
 
-def git_function():
+def git_function(barami_status):
     repo=git.Repo(path_git_repo)
     repo.git.add(update=True)
-    changed_time=time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+    if barami_status is -1:
+        git_message='init run'
+
+    elif barami_status is 0:
+        git_message='닫힘'
+
+    else:
+        git_message='열림'
+
+    changed_time=time.strftime('%Y-%m-%d %H:%M:%S '+git_message, time.localtime(time.time()))
     repo.index.commit(changed_time)
     origin=repo.remote(name='origin')
-    origin.push()
+    while 1:
+        try:
+            origin.push()
+            break
+        except git.exc.GitCommandError:
+            pass
 
         # try:
         #     repo=git.Repo(path_git_repo)

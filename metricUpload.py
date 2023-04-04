@@ -30,7 +30,7 @@ def uploadHeartbeat():
     h = Http()
     if not configExist:
         return
-    h.request(configHeartbeatUrl, "GET")
+    h.request(configHeartbeatUrl, "PUT")
     print("heartbeat sent to {0}".format(configHeartbeatUrl))
     return
 
@@ -39,6 +39,6 @@ def uploadErrorLog(level, str):
     if not configExist:
         return
     data = {'level': level, 'data': str}
-    h.request(configLogUrl, "POST", urlencode(data))
+    h.request(configLogUrl, "PUT", urlencode(data))
     print("log sent to {0}".format(configLogUrl))
     return

@@ -6,6 +6,8 @@ import numpy as np
 import math
 import time
 import header
+import metricUpload
+import sys
 
 OPEN = 1
 CLOSE = 0
@@ -84,11 +86,19 @@ def git_function(barami_status):
         #     print("Some error occured while pushing the code")
 
 
+def globalExceptionHandler(exctype, value, traceback):
+    metricUpload.configLogUrl('error', "type: {0}, value: {1}, trace: {2}".format(exctype, value, traceback))
+
+
 if __name__ == "__main__":
+    sys.excepthook = globalExceptionHandler
     check = 0
     mag_list = list()
+    metricUpload.parseConfigure()
+    metricUpload.configLogUrl('info', "start application loop")
 
     while True:
+        metricUpload.uploadHeartbeat()
         mpu9250 = header.MPU9250()
         mag = mpu9250.readMagnet()
         mag_total = math.sqrt(mag['x']**2+mag['y']**2+mag['z']**2)
@@ -108,6 +118,6 @@ if __name__ == "__main__":
                 # print("open")
                 pushToGit(OPEN)
 
-            del(mag_list)
+            del (mag_list)
             mag_list = list()
             check = 1

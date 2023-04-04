@@ -87,7 +87,7 @@ def git_function(barami_status):
 
 
 def globalExceptionHandler(exctype, value, traceback):
-    metricUpload.configLogUrl('error', "type: {0}, value: {1}, trace: {2}".format(exctype, value, traceback))
+    metricUpload.uploadErrorLog('error', "type: {0}, value: {1}, trace: {2}".format(exctype, value, traceback))
 
 
 if __name__ == "__main__":
@@ -95,7 +95,7 @@ if __name__ == "__main__":
     check = 0
     mag_list = list()
     metricUpload.parseConfigure()
-    metricUpload.configLogUrl('info', "start application loop")
+    metricUpload.uploadErrorLog('info', "start application loop")
 
     while True:
         metricUpload.uploadHeartbeat()

@@ -27,18 +27,24 @@ def parseConfigure():
 
 
 def uploadHeartbeat():
-    h = Http()
-    if not configExist:
-        return
-    h.request(configHeartbeatUrl, "PUT")
-    print("heartbeat sent to {0}".format(configHeartbeatUrl))
+    try:
+        h = Http()
+        if not configExist:
+            return
+        h.request(configHeartbeatUrl, "PUT")
+        print("heartbeat sent to {0}".format(configHeartbeatUrl))
+    except:
+        print("failed to send heartbeat")
     return
 
 def uploadErrorLog(level, str):
-    h = Http()
-    if not configExist:
-        return
-    data = {'level': level, 'data': str}
-    h.request(configLogUrl, "PUT", urlencode(data))
-    print("log sent to {0}".format(configLogUrl))
+    try:
+        h = Http()
+        if not configExist:
+            return
+        data = {'level': level, 'data': str}
+        h.request(configLogUrl, "PUT", urlencode(data))
+        print("log sent to {0}".format(configLogUrl))
+    except:
+        print("failed to send log")
     return

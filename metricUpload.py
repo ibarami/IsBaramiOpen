@@ -15,7 +15,7 @@ def parseConfigure():
     if not 'Common' in config:
         configExist = False
     else:
-        configHeartbeatUrl = config['Common'].get('configLogUrl', '')
+        configHeartbeatUrl = config['Common'].get('HeartbeatUrl', '')
         configLogUrl = config['Common'].get('LogUrl', '')
         if configLogUrl == '' or configHeartbeatUrl == '':
             configExist = False

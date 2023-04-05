@@ -87,7 +87,7 @@ def git_function(barami_status):
 
 
 def globalExceptionHandler(exctype, value, traceback):
-    metricUpload.uploadErrorLog('error', "type: {0}, value: {1}, trace: {2}".format(exctype, value, traceback))
+    metricUpload.uploadErrorLog('E', "type: {0}, value: {1}, trace: {2}".format(exctype, value, traceback))
 
 
 if __name__ == "__main__":
@@ -95,12 +95,20 @@ if __name__ == "__main__":
     check = 0
     mag_list = list()
     metricUpload.parseConfigure()
-    metricUpload.uploadErrorLog('info', "start application loop")
+    metricUpload.uploadErrorLog('I', "start application loop")
+    heartbeat_interval = 60
+    heartbeat_count = 0
 
     while True:
-        metricUpload.uploadHeartbeat()
+        if heartbeat_count >= heartbeat_interval:
+            metricUpload.uploadHeartbeat()
+            heartbeat_count = 0
+        heartbeat_count += 1
+
         mpu9250 = header.MPU9250()
         mag = mpu9250.readMagnet()
+        if mag['x'] == 0 and mag['y'] == 0 and mag['z'] == 0:
+            metricUpload.uploadErrorLog('E', "every MPU9250 data is zero")
         mag_total = math.sqrt(mag['x']**2+mag['y']**2+mag['z']**2)
         time.sleep(1)
 

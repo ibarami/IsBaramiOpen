@@ -1,6 +1,7 @@
 import configparser
 from httplib2 import Http
 from urllib.parse import urlencode
+import json
 
 configExist = False
 configHeartbeatUrl = ''
@@ -45,8 +46,8 @@ def uploadErrorLog(level, str):
         if not configExist:
             return
         data = {'level': level, 'data': str}
-        h.request(configLogUrl, "PUT", body=urlencode(data), headers={'content-type':'application/json'})
-        print("log sent to {0}".format(configLogUrl))
+        h.request(configLogUrl, "PUT", body=json.dumps(data), headers={'content-type':'application/json'})
+        print("log sent to {0} : {1}".format(configLogUrl, str))
     except:
         print("failed to send log")
     return

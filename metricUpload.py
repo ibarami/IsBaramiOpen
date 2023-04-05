@@ -45,7 +45,7 @@ def uploadErrorLog(level, str):
         if not configExist:
             return
         data = {'level': level, 'data': str}
-        h.request(configLogUrl, "PUT", urlencode(data))
+        h.request(configLogUrl, "PUT", body=urlencode(data), headers={'content-type':'application/json'})
         print("log sent to {0}".format(configLogUrl))
     except:
         print("failed to send log")

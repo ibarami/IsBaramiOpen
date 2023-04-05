@@ -27,6 +27,7 @@ def parseConfigure():
 
 
 def uploadHeartbeat():
+    global configExist, configHeartbeatUrl
     h = Http()
     if not configExist:
         return
@@ -35,6 +36,7 @@ def uploadHeartbeat():
     return
 
 def uploadErrorLog(level, str):
+    global configExist, configLogUrl
     h = Http()
     if not configExist:
         return

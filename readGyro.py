@@ -99,23 +99,41 @@ if __name__ == "__main__":
     heartbeat_interval = 60
     heartbeat_count = 0
 
+    # 주 처리 루프
     while True:
+        time.sleep(1) 
+        # 아래 코드에서 실패하면 그냥 continue 할 것이기 때문에,
+        # while문의 실행 주기를 1초 이상으로 보장해주기 위해 맨위에 sleep 배치함
+
+        # 하트비트 주기마다 하트비트 전송 
         if heartbeat_count >= heartbeat_interval:
             metricUpload.uploadHeartbeat()
             heartbeat_count = 0
         heartbeat_count += 1
 
+        # MPU9250 초기화
+        # TODO: 매 루프마다 센서를 초기화할 이유가 있나?
         mpu9250 = header.MPU9250()
-        mag = mpu9250.readMagnet()
-        if mag['x'] == 0 and mag['y'] == 0 and mag['z'] == 0:
-            metricUpload.uploadErrorLog('E', "every MPU9250 data is zero")
-        mag_total = math.sqrt(mag['x']**2+mag['y']**2+mag['z']**2)
-        time.sleep(1)
 
+        # MPU9250 유효성 검사
+        if not mpu9250.searchDevice():
+            metricUpload.uploadErrorLog('E', "failed to find MPU9250 on bus")
+
+        # MPU9250 값 읽기    
+        mag = mpu9250.readMagnet()        
+
+        # 자기장 벡터 크기 계산
+        mag_total = math.sqrt(mag['x']**2+mag['y']**2+mag['z']**2)
+
+        # 지구 자기장 및 주위 철재 자재 때문에 자기장 벡터의 크기는 0 이하일 수 없다.
+        # 이를 간접 유효성 검사 방법으로 사용한다
+        if mag_total <= 0:
+            metricUpload.uploadErrorLog('E', "every MPU9250 data is zero")
+
+        # 자기장 벡터 크기의 3회 산술평균 값을 누적하고 계산에 사용한다.
         if check < 3:
             mag_list.append(mag_total)
             check += 1
-
         else:
             mag_avg = np.mean(mag_list)
             # print(mag_avg)

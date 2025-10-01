@@ -100,9 +100,9 @@ class MPU9250:
     def searchDevice(self):
         who_am_i=self.bus_read_byte_data(INT_STATUS,1)
         if(who_am_i == DEVICE_ID):
-            return true
+            return True
         else:
-            return false
+            return False
 
     ## Configure MPU-9250
     #  @param [in] self The object pointer.

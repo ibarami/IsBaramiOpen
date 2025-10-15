@@ -103,6 +103,9 @@ class MPU9250:
             return True
         else:
             return False
+        
+    def getWhoAmI(self):
+        return self.bus_read_byte_data(INT_STATUS,1)
 
     ## Configure MPU-9250
     #  @param [in] self The object pointer.

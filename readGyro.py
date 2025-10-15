@@ -118,6 +118,7 @@ if __name__ == "__main__":
         # MPU9250 유효성 검사
         if not mpu9250.searchDevice():
             metricUpload.uploadErrorLog('E', "failed to find MPU9250 on bus")
+            metricUpload.uploadErrorLog('E', "gotten WHO_AM_I is " + str(mpu9250.getWhoAmI()))
 
         # MPU9250 값 읽기    
         mag = mpu9250.readMagnet()        
